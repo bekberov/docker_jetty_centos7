@@ -2,6 +2,8 @@
 
  MAINTAINER bekberov <bekberovkerim@gmail.com>
 
+ ADD ./service/jetty  /etc/default/
+ 
  RUN  \
         yum update -y  && \
         yum install -y java-1.8.0-openjdk wget tar && \
@@ -11,4 +13,15 @@
         yum clean all  && \
         rm -rf /var/tmp/* ;
 
-EXPOSE 8080
+ RUN  \
+        useradd -m jetty  && \
+        chown -R jetty:jetty /opt/jetty/ && \
+        ln -s /opt/jetty/bin/jetty.sh /etc/init.d/jetty && \
+        chkconfig --add jetty && \
+        chkconfig --level 345 jetty on;
+
+
+ ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.91-0.b14.el7_2.x86_64/jre
+
+ 
+ EXPOSE 8080
